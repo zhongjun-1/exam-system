@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>题库考试系统</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #1a3a5c 0%, #2d5a87 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    max-width: 800px;
+    width: 100%;
+  }
+  h1 {
+    color: #fff;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .subtitle {
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 0.95em;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 12px;
+    padding: 24px;
+    text-decoration: none;
+    color: #1a3a5c;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: block;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  }
+  .card h2 {
+    font-size: 1.15em;
+    margin-bottom: 8px;
+  }
+  .card p {
+    font-size: 0.85em;
+    color: #666;
+    line-height: 1.5;
+  }
+  .card .icon {
+    font-size: 2.5em;
+    margin-bottom: 12px;
+    display: block;
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.5em; }
+    .card { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>题库考试系统</h1>
+  <p class="subtitle">多科目在线练习与考试平台</p>
+  <div class="card-grid">
+    <a class="card" href="综合题库考试系统.html">
+      <span class="icon">📚</span>
+      <h2>综合题库考试系统</h2>
+      <p>辅警管理办法 + 专业基础知识 + 公共基础知识，全科整合</p>
+    </a>
+    <a class="card" href="专业基础知识考试系统.html">
+      <span class="icon">📖</span>
+      <h2>专业基础知识</h2>
+      <p>专业基础知识专项练习与考试</p>
+    </a>
+    <a class="card" href="辅警管理办法考试系统.html">
+      <span class="icon">🛡</span>
+      <h2>辅警管理办法</h2>
+      <p>辅警管理办法专项练习与考试</p>
+    </a>
+    <a class="card" href="公共基础知识考试系统.html">
+      <span class="icon">🏛</span>
+      <h2>公共基础知识</h2>
+      <p>公共基础知识专项练习与考试</p>
+    </a>
+  </div>
+</div>
+</body>
+</html>

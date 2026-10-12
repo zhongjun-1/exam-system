@@ -1,0 +1,2633 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>辅警管理办法 - 题库考试系统</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif; background: #f0f2f5; color: #333; }
+.header { background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%); color: #fff; padding: 20px 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 100; }
+.header h1 { font-size: 22px; display: flex; align-items: center; gap: 10px; }
+.header .badge { background: #e8a02f; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 12px; font-weight: normal; }
+.nav { display: flex; gap: 5px; margin-top: 12px; }
+.nav button { background: rgba(255,255,255,0.15); border: none; color: #fff; padding: 8px 18px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+.nav button:hover { background: rgba(255,255,255,0.25); }
+.nav button.active { background: #f0f2f5; color: #1a3a5c; font-weight: bold; }
+.container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
+.card { background: #fff; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.stat-row { display: flex; gap: 15px; flex-wrap: wrap; }
+.stat-box { flex: 1; min-width: 140px; background: linear-gradient(135deg, #e8f0f8 0%, #d4e4f4 100%); border-radius: 8px; padding: 18px; text-align: center; }
+.stat-box .num { font-size: 32px; font-weight: bold; color: #1a3a5c; }
+.stat-box .label { font-size: 14px; color: #555; margin-top: 4px; }
+.btn-primary { background: #2c5f8a; color: #fff; border: none; padding: 12px 30px; border-radius: 6px; font-size: 16px; cursor: pointer; transition: all 0.2s; }
+.btn-primary:hover { background: #1a3a5c; transform: translateY(-1px); }
+.btn-secondary { background: #f0f2f5; color: #333; border: 1px solid #d0d5dd; padding: 8px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s; }
+.btn-secondary:hover { background: #e0e5ec; }
+.btn-success { background: #28a745; color: #fff; border: none; padding: 12px 30px; border-radius: 6px; font-size: 16px; cursor: pointer; }
+.btn-success:hover { background: #218838; }
+.section-title { font-size: 18px; font-weight: bold; color: #1a3a5c; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e8a02f; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+.form-group select, .form-group input { width: 100%; padding: 10px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 14px; }
+.checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; }
+.checkbox-group label { display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer; }
+.question-block { border: 1px solid #e0e5ec; border-radius: 8px; padding: 20px; margin-bottom: 15px; background: #fafbfc; }
+.question-block .q-type { display: inline-block; background: #2c5f8a; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 4px; margin-bottom: 8px; }
+.question-block .q-text { font-size: 16px; line-height: 1.7; margin-bottom: 12px; }
+.question-block .q-options { margin-left: 10px; }
+.question-block .q-option { padding: 6px 0; font-size: 15px; line-height: 1.6; }
+.option-label { display: inline-block; font-weight: bold; color: #1a3a5c; min-width: 24px; }
+.option-input { margin-right: 6px; cursor: pointer; }
+.option-clickable { cursor: pointer; padding: 8px 12px; border-radius: 6px; border: 2px solid #e0e5ec; margin-bottom: 8px; transition: all 0.15s; display: flex; align-items: flex-start; gap: 8px; }
+.option-clickable:hover { border-color: #2c5f8a; background: #f0f5fa; }
+.option-clickable.selected { border-color: #2c5f8a; background: #e8f0f8; }
+.option-clickable.correct { border-color: #28a745; background: #e6f9e8; }
+.option-clickable.wrong { border-color: #dc3545; background: #fce8ea; }
+.option-clickable.show-correct { border-color: #28a745; background: #e6f9e8; }
+.q-answer { margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 14px; }
+.q-answer.correct { background: #e6f9e8; color: #1b7e2b; }
+.q-answer.wrong { background: #fce8ea; color: #c82333; }
+.q-analysis { margin-top: 10px; padding: 12px; background: #f8f9fa; border-radius: 6px; font-size: 14px; line-height: 1.8; border-left: 4px solid #2c5f8a; }
+.q-analysis .opt-line { margin: 4px 0; padding: 4px 8px; border-radius: 4px; }
+.q-analysis .opt-line.ok { background: #e6f9e8; color: #1b7e2b; }
+.q-analysis .opt-line.no { background: #fce8ea; color: #c82333; }
+.q-analysis .opt-line.na { color: #999; }
+.btn-collect { margin-top: 10px; padding: 8px 16px; background: #e8f0f8; border: 1px solid #2c5f8a; color: #2c5f8a; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+.btn-collect:hover { background: #d0e0f0; }
+.btn-collect.collected { background: #e6f9e8; border-color: #1b7e2b; color: #1b7e2b; }
+.nav-badge { display: inline-block; margin-left: 4px; padding: 0 6px; background: #c82333; color: #fff; border-radius: 10px; font-size: 12px; min-width: 18px; text-align: center; }
+.timer { font-size: 20px; font-weight: bold; color: #e8a02f; }
+.progress-bar { width: 100%; height: 8px; background: #e0e5ec; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+.progress-bar .fill { height: 100%; background: #2c5f8a; border-radius: 4px; transition: width 0.3s; }
+.quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+.q-number { color: #888; font-size: 14px; }
+.result-summary { text-align: center; padding: 30px; }
+.result-summary .score { font-size: 48px; font-weight: bold; }
+.result-summary .score.pass { color: #28a745; }
+.result-summary .score.fail { color: #dc3545; }
+.result-summary .info { font-size: 16px; color: #666; margin-top: 10px; }
+.filter-bar { margin-bottom: 15px; }
+.filter-bar select { padding: 6px 12px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 14px; }
+.browse-q { border-left: 4px solid #2c5f8a; }
+.browse-q .q-answer-line { margin-top: 12px; padding: 8px 12px; background: #e6f9e8; border-radius: 6px; font-size: 14px; color: #1b7e2b; font-weight: bold; }
+.pagination { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+.pagination button { padding: 6px 12px; border: 1px solid #d0d5dd; background: #fff; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.pagination button.active { background: #2c5f8a; color: #fff; border-color: #2c5f8a; }
+.pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+.hidden { display: none; }
+@media (max-width: 600px) { .header h1 { font-size: 16px; } .stat-box { min-width: 100px; } .stat-box .num { font-size: 24px; } }
+/* AI Analysis Styles */
+.btn-settings { background: rgba(255,255,255,0.15); border: none; color: #fff; padding: 8px 18px; border-radius: 6px 6px 0 0; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+.btn-settings:hover { background: rgba(255,255,255,0.3); }
+.settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+.settings-modal.show { display: flex; }
+.settings-content { background: #fff; border-radius: 10px; padding: 30px; width: 90%; max-width: 480px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+.settings-content h3 { font-size: 20px; color: #1a3a5c; margin-bottom: 15px; }
+.settings-content p { font-size: 13px; color: #888; margin-top: 5px; }
+
+/* Cloud Sync Styles */
+.sync-status { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 3px 10px; border-radius: 12px; background: rgba(255,255,255,0.15); cursor: pointer; transition: all 0.2s; color: #fff; }
+.sync-status:hover { background: rgba(255,255,255,0.28); }
+.sync-status .dot { width: 8px; height: 8px; border-radius: 50%; background: #999; flex-shrink: 0; }
+.sync-status.synced .dot { background: #28a745; box-shadow: 0 0 6px #28a745; }
+.sync-status.syncing .dot { background: #e8a02f; animation: syncPulse 1s infinite; }
+.sync-status.error .dot { background: #dc3545; }
+.sync-status.offline .dot { background: #888; }
+@keyframes syncPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.sync-modal-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+.sync-modal-section:last-child { border-bottom: none; }
+.sync-info-box { background: #f0f7ff; border: 1px solid #c5d4e8; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 12px; }
+.sync-info-box b { color: #1a3a5c; }
+.sync-log { max-height: 120px; overflow-y: auto; background: #f8f9fa; border: 1px solid #e0e5ec; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-family: monospace; color: #666; }
+.sync-log .log-line { margin: 2px 0; }
+.sync-log .log-ok { color: #1b7e2b; }
+.sync-log .log-err { color: #c82333; }
+.sync-log .log-info { color: #0066cc; }
+.ai-analysis { margin-top: 10px; padding: 12px; background: #f0f7ff; border-radius: 6px; font-size: 14px; line-height: 1.8; border-left: 4px solid #0066cc; }
+.ai-analysis .ai-label { font-weight: bold; color: #0066cc; margin-bottom: 6px; font-size: 13px; }
+.ai-loading { display: flex; align-items: center; gap: 8px; color: #666; font-size: 14px; }
+.ai-loading .spinner { width: 16px; height: 16px; border: 2px solid #ddd; border-top-color: #0066cc; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-error { color: #c82333; font-size: 13px; }
+.ai-link { color: #0066cc; text-decoration: underline; cursor: pointer; }
+.btn-ai { margin-top: 10px; padding: 6px 16px; background: #e8f0ff; border: 1px solid #0066cc; color: #0066cc; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+.btn-ai:hover { background: #d0e0ff; }
+
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>辅警管理办法 题库考试系统 <span class="badge">共71题</span></h1>
+  <div class="nav">
+    <button class="nav-btn active" data-view="home" onclick="switchView('home')">首页</button>
+    <button class="nav-btn" data-view="exam" onclick="switchView('exam')">考试模式</button>
+    <button class="nav-btn" data-view="practice" onclick="switchView('practice')">练习模式</button>
+    <button class="nav-btn" data-view="browse" onclick="switchView('browse')">题库浏览</button>
+    <button class="nav-btn" data-view="wrong" onclick="switchView('wrong')">错题本<span class="nav-badge" id="wrong-badge">0</span></button>
+    <span id="sync-status-indicator" class="sync-status offline" onclick="openSyncModal()" title="点击管理云同步"><span class="dot"></span><span id="sync-status-text">未同步</span></span>
+    <button class="btn-settings" onclick="openSettings()">⚙ AI设置</button>
+  </div>
+</div>
+<div class="container">
+  <!-- HOME -->
+  <div id="view-home" class="view">
+    <div class="card">
+      <div class="section-title">题库概览</div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="num" id="stat-total">71</div><div class="label">总题数</div></div>
+        <div class="stat-box"><div class="num">19</div><div class="label">单选题</div></div>
+        <div class="stat-box"><div class="num">19</div><div class="label">多选题</div></div>
+        <div class="stat-box"><div class="num">33</div><div class="label">判断题</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">选择考试模式</div>
+      <p style="margin-bottom:15px;color:#666;line-height:1.8;">本系统基于《辅警管理办法》题库，支持以下三种学习模式：</p>
+      <div style="display:flex;gap:15px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;background:#e8f0f8;border-radius:8px;padding:18px;cursor:pointer;" onclick="switchView('exam')">
+          <div style="font-size:28px;margin-bottom:8px;">📝</div>
+          <div style="font-weight:bold;font-size:16px;color:#1a3a5c;">考试模式</div>
+          <div style="font-size:13px;color:#666;margin-top:5px;line-height:1.6;">随机抽题、限时作答、交卷评分，模拟真实考试环境</div>
+        </div>
+        <div style="flex:1;min-width:200px;background:#e6f9e8;border-radius:8px;padding:18px;cursor:pointer;" onclick="switchView('practice')">
+          <div style="font-size:28px;margin-bottom:8px;">✅</div>
+          <div style="font-weight:bold;font-size:16px;color:#1b7e2b;">练习模式</div>
+          <div style="font-size:13px;color:#666;margin-top:5px;line-height:1.6;">逐题练习、即时反馈、查看正确答案，边做边学</div>
+        </div>
+        <div style="flex:1;min-width:200px;background:#fff4e6;border-radius:8px;padding:18px;cursor:pointer;" onclick="switchView('browse')">
+          <div style="font-size:28px;margin-bottom:8px;">📖</div>
+          <div style="font-weight:bold;font-size:16px;color:#e8a02f;">题库浏览</div>
+          <div style="font-size:13px;color:#666;margin-top:5px;line-height:1.6;">浏览全部题目，按题型筛选，方便阅读复习</div>
+        </div>
+        <div style="flex:1;min-width:200px;background:#fce8ea;border-radius:8px;padding:18px;cursor:pointer;" onclick="switchView('wrong')">
+          <div style="font-size:28px;margin-bottom:8px;">⭐</div>
+          <div style="font-weight:bold;font-size:16px;color:#c82333;">错题本</div>
+          <div style="font-size:13px;color:#666;margin-top:5px;line-height:1.6;">收藏做错的题目，针对性复习，攻克薄弱环节</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXAM CONFIG -->
+  <div id="view-exam" class="view hidden">
+    <div id="exam-config" class="card">
+      <div class="section-title">考试设置</div>
+      <div class="form-group">
+        <label>选择题型（可多选）</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" value="single" checked> 单选题（19题）</label>
+          <label><input type="checkbox" value="multiple" checked> 多选题（19题）</label>
+          <label><input type="checkbox" value="judge" checked> 判断题（33题）</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>题目数量</label>
+        <select id="exam-count">
+          <option value="10">10题</option>
+          <option value="20" selected>20题</option>
+          <option value="30">30题</option>
+          <option value="50">50题</option>
+          <option value="all">全部题目</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>考试时长（分钟，0=不限时）</label>
+        <select id="exam-time">
+          <option value="0">不限时</option>
+          <option value="10">10分钟</option>
+          <option value="20" selected>20分钟</option>
+          <option value="30">30分钟</option>
+          <option value="45">45分钟</option>
+          <option value="60">60分钟</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>题目顺序</label>
+        <select id="exam-order">
+          <option value="random" selected>随机顺序</option>
+          <option value="sequential">按顺序</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="startExam()" style="margin-top:10px;">开始考试</button>
+    </div>
+
+    <!-- EXAM RUNNING -->
+    <div id="exam-running" class="hidden">
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <span class="q-number" id="exam-progress">第 1 / 20 题</span>
+          <div class="progress-bar" style="width:200px;margin-top:8px;"><div class="fill" id="exam-progress-bar" style="width:5%"></div></div>
+        </div>
+        <div style="text-align:right;">
+          <div class="timer" id="exam-timer">20:00</div>
+          <button class="btn-secondary" onclick="submitExam()" style="margin-top:8px;">提前交卷</button>
+        </div>
+      </div>
+      <div id="exam-questions"></div>
+      <div class="quiz-nav">
+        <button class="btn-secondary" id="exam-prev" onclick="examPrev()">上一题</button>
+        <span id="exam-answered-count" class="q-number">已答 0 / 20</span>
+        <button class="btn-success" id="exam-next" onclick="examNext()">下一题</button>
+      </div>
+    </div>
+
+    <!-- EXAM RESULT -->
+    <div id="exam-result" class="hidden"></div>
+  </div>
+
+  <!-- PRACTICE -->
+  <div id="view-practice" class="view hidden">
+    <div class="card">
+      <div class="section-title">练习模式</div>
+      <div class="form-group">
+        <label>选择题型</label>
+        <select id="practice-type" onchange="restartPractice()">
+          <option value="all" selected>全部题型</option>
+          <option value="single">仅单选题</option>
+          <option value="multiple">仅多选题</option>
+          <option value="judge">仅判断题</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>从第几题开始</label>
+        <input type="number" id="practice-start" min="1" value="1" style="width:120px;">
+      </div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:normal;cursor:pointer;">
+          <input type="checkbox" id="practice-auto-next" checked> 答对自动跳转下一题
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:normal;cursor:pointer;margin-top:6px;">
+          <input type="checkbox" id="practice-auto-next-wrong"> 答错也自动跳转
+        </label>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+        <span class="q-number" id="practice-progress">第 1 / 71 题</span>
+        <button class="btn-secondary" onclick="restartPractice()">重新开始</button>
+      </div>
+      <div class="progress-bar"><div class="fill" id="practice-progress-bar" style="width:0%"></div></div>
+    </div>
+    <div id="practice-question"></div>
+    <div class="quiz-nav" id="practice-nav">
+      <button class="btn-secondary" id="practice-prev" onclick="practicePrev()">上一题</button>
+      <button class="btn-success" id="practice-next" onclick="practiceNext()">下一题</button>
+    </div>
+  </div>
+
+  <!-- BROWSE -->
+  <div id="view-browse" class="view hidden">
+    <div class="card">
+      <div class="section-title">题库浏览</div>
+      <div class="filter-bar">
+        <label>题型筛选：</label>
+        <select id="browse-filter" onchange="renderBrowse()">
+          <option value="all" selected>全部题型（71题）</option>
+          <option value="single">单选题（19题）</option>
+          <option value="multiple">多选题（19题）</option>
+          <option value="judge">判断题（33题）</option>
+        </select>
+      </div>
+    </div>
+    <div id="browse-list"></div>
+    <div class="pagination" id="browse-pagination"></div>
+  </div>
+</div>
+
+  <!-- WRONG QUESTIONS -->
+  <div id="view-wrong" class="view hidden">
+    <div class="card">
+      <div class="section-title">错题本</div>
+      <div id="wrong-stats"></div>
+      <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
+        <button class="btn" onclick="startWrongPractice()">开始练习错题</button>
+        <button class="btn-secondary" onclick="clearAllWrong()">清空错题本</button>
+        <button class="btn-secondary" onclick="switchView('home')">返回首页</button>
+      </div>
+    </div>
+    <div id="wrong-list"></div>
+  </div>
+</div>
+
+<div class="settings-modal" id="settings-modal">
+  <div class="settings-content">
+    <h3>AI解析设置</h3>
+    <div class="form-group">
+      <label>DeepSeek API Key</label>
+      <input type="password" id="api-key-input" placeholder="请输入您的 DeepSeek API Key">
+      <p>获取地址：https://platform.deepseek.com/api_keys</p>
+    </div>
+    <div class="form-group">
+      <label>API 地址（可选，默认DeepSeek官方）</label>
+      <input type="text" id="api-url-input" placeholder="https://api.deepseek.com/v1/chat/completions">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+      <button class="btn-secondary" onclick="closeSettings()">取消</button>
+      <button class="btn-primary" onclick="saveApiKeySetting()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLOUD SYNC MODAL -->
+<div class="settings-modal" id="sync-modal">
+  <div class="settings-content" style="max-width:520px;">
+    <h3>☁️ 云端数据同步</h3>
+    <div class="sync-info-box">
+      将<b>错题本、答题进度、AI解析缓存</b>同步到云端，实现平板、电脑多端数据一致。数据使用您的同步密码加密后上传。
+    </div>
+    <div class="sync-modal-section">
+      <div class="form-group">
+        <label>同步账号（自定义，用于跨设备识别）</label>
+        <input type="text" id="sync-username" placeholder="如：zhangsan 或 工号">
+      </div>
+      <div class="form-group">
+        <label>同步密码（用于加密数据，请牢记）</label>
+        <input type="password" id="sync-password" placeholder="请输入同步密码">
+      </div>
+      <div class="form-group">
+        <label>JsonBin Master Key（云存储密钥）</label>
+        <input type="password" id="sync-master-key" placeholder="请输入 JsonBin Master Key">
+        <p style="font-size:12px;color:#999;margin-top:4px;">免费获取：<a href="https://jsonbin.io/app/api-keys" target="_blank" style="color:#0066cc;">https://jsonbin.io/app/api-keys</a></p>
+      </div>
+      <div class="form-group">
+        <label><input type="checkbox" id="sync-auto" checked style="margin-right:6px;"> 开启自动同步</label>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-secondary" onclick="saveSyncSettings()" style="flex:1;">保存设置</button>
+        <button class="btn-primary" onclick="syncNow()" style="flex:1;">🔄 立即同步</button>
+      </div>
+    </div>
+    <div class="sync-modal-section">
+      <div style="font-size:13px;font-weight:bold;color:#1a3a5c;margin-bottom:8px;">同步状态</div>
+      <div id="sync-status-detail" style="font-size:13px;color:#666;margin-bottom:8px;">未配置云同步</div>
+      <div id="sync-log" class="sync-log"><div class="log-line log-info">同步日志将显示在这里...</div></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn-secondary" onclick="closeSyncModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    "id": 1,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "应聘警务辅助人员原则上年龄为（）。",
+    "options": [
+      "年龄16至35周岁",
+      "年龄18至25周岁",
+      "年龄18至35周岁",
+      "年龄18至30周岁"
+    ],
+    "answer": [
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 2,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警纳入公安警务督察部门的督察范围，（）部门应当及时纠正辅警的违规违纪行为，受理涉及辅警的控告投诉，积极保护辅警的正当权益，纪检部门应调查处理相关违纪违规行为。",
+    "options": [
+      "政工",
+      "纪检",
+      "刑警",
+      "警务督察"
+    ],
+    "answer": [
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 3,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "报考人员有舞弊等严重违反招聘纪律行为的，（）年内不得报考公安机关辅警。",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "5"
+    ],
+    "answer": [
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 4,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "对在交警、治安、基层派出所等部门从事辅助执法、便民服务、教育管理等工作的重点风险岗位，及其他敏感岗位工作满（）年的辅警，必须进行轮岗交流。",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "answer": [
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 5,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警应在接到轮岗交流通知后的（）天内到新岗位报到并做好工作交接。",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "answer": [
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 6,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "年度培训是对全体辅警定期开展的轮训，每年培训时间累计不少于（）天。",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "5"
+    ],
+    "answer": [
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 7,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "岗前培训是对新招聘辅警进行的培训。辅警必须在试用期（）完成岗前培训。",
+    "options": [
+      "实习期结束前",
+      "入职一周内",
+      "入职满半年",
+      "层级评定前"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 8,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "考核应当根据警务辅助人员岗位职责和工作要求，通过确定量化指标或关键指标等方式，明确警务辅助人员考核具体内容，并按照“实事求是、客观科学、（）”的总体原则，选择合适的程序和方法。",
+    "options": [
+      "有效判断",
+      "便于操作",
+      "合法合规",
+      "公平公正"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 9,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "警务辅助人员的考核分为试用期考核、月考核和（）",
+    "options": [
+      "季度考核",
+      "晋升考核",
+      "年度考核",
+      "层级考核"
+    ],
+    "answer": [
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 10,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警试用期考核应在试用期结束前完成，结果分为（）、不合格两个等次。",
+    "options": [
+      "基本合格",
+      "优秀",
+      "合格",
+      "良好"
+    ],
+    "answer": [
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 11,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警月考核于每月末开展，由用人单位结合工作实际研究明确细化的定性和量化评价标准，各责任民警结合辅警完成日常工作任务、阶段性工作目标及日常行为规范等情况，综合进行考核，分为优秀、合格、()、不合格四个等次。",
+    "options": [
+      "基本合格",
+      "良好",
+      "接近合格",
+      "暂定合格"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 12,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警年度考核工作于每年年末或翌年年初进行，考核结果分为优秀、合格、（）、不合格四个等次。",
+    "options": [
+      "不参加考核",
+      "不定等次",
+      "良好",
+      "基本合格"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 13,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "年度考核评为优秀等级的警务辅助人员，不超过本单位警务辅助人员总数的（）",
+    "options": [
+      "5%",
+      "10%",
+      "15%",
+      "20%"
+    ],
+    "answer": [
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 14,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "年度考核被评定为基本合格等次的，延迟（）晋升层级。",
+    "options": [
+      "3个月",
+      "6个月",
+      "12个月",
+      "15个月"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 15,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "以下说法有误的是（）",
+    "options": [
+      "无正当理由，未按规定办理请假手续，不到岗工作的，可按旷工处理",
+      "假期已满未获准续假，又无正当理由逾期不归且不办理销假手续的，可按旷工处理",
+      "辅警请休假由本人向所在单位书面提出申请，详细说明事由、地点和起止时间，由所在单位领导审批同意后，报政工部门备案",
+      "假期结束时，应按时返回工作岗位，并及时销假。确因特殊情况不能按时返回的，无需履行续假手续"
+    ],
+    "answer": [
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 16,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "党员辅警涉嫌违反党纪的，由（）立案查处。",
+    "options": [
+      "政工部门",
+      "督察部门",
+      "法制部门",
+      "纪检部门"
+    ],
+    "answer": [
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 17,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警违规违纪行为视情节严重给予警告、严重警告、记过、降级、()处理。",
+    "options": [
+      "辞退",
+      "劝退",
+      "辞职",
+      "立案"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 18,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "擅自将配发的服装、标识转借他人的，予以严重警告，造成严重后果的，予以（）。",
+    "options": [
+      "劝退",
+      "辞职",
+      "辞退",
+      "立案"
+    ],
+    "answer": [
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 19,
+    "type": "single",
+    "typeLabel": "单选题",
+    "knowledge": "辅警管理办法",
+    "question": "新招聘辅警（）确定责任民警，同时在辅警系统完成警辅结对工作。",
+    "options": [
+      "试用期满后",
+      "入职后应第一时间",
+      "层级评定后",
+      "入职满一个月后"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 20,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "有下列情形之一的人员，不得招聘为辅警（）。",
+    "options": [
+      "本人或家庭成员、主要社会关系人参加非法组织、邪教组织或者从事其他危害国家安全活动的",
+      "受过刑事处罚或者涉嫌违法犯罪尚未查清的",
+      "编造、散布有损国家声誉、反对党的理论和路线方针政策、违反国家法律法规信息的",
+      "因吸食、注射毒品，卖淫、嫖娼，赌博或为赌博提供条件受到处罚的"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 21,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "勤务辅警按照岗位分工，履行下列职责（）",
+    "options": [
+      "协助预防、制止违法犯罪活动",
+      "协助盘查、堵控、监控、看管违法犯罪嫌疑人",
+      "记录讯问、询问笔录",
+      "协助开展戒毒人员日常管理、检查易制毒化学品企业、公开查缉毒品"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 22,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "文职辅警按照岗位分工，履行下列职责（）",
+    "options": [
+      "文书助理、档案管理、接线查询、窗口服务、证件办理、枪支管理工作",
+      "心理咨询、医疗、翻译、计算机网络维护、数据分析、软件研发、安全检测、通信保障、资金分析、非涉密财务管理、实验室分析、现场勘查、检验鉴定等技术支持工作",
+      "警用装备保管和维护保养等警务保障工作",
+      "其他可以由文职辅警从事的工作"
+    ],
+    "answer": [
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 23,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警不得从事以下工作（）",
+    "options": [
+      "国内安全保卫、技术侦察、反邪教、反恐怖等工作",
+      "办理涉及国家秘密的事项",
+      "案件调查取证、出具鉴定报告、交通事故责任认定",
+      "执行刑事强制措施"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 24,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警应当履行下列义务（）",
+    "options": [
+      "遵纪守法，保守国家秘密和工作秘密",
+      "服从公安机关管理，听从人民警察指挥",
+      "忠于职守，文明执勤，廉洁奉公，不徇私情",
+      "遵守社会公德，尊重民族风俗习惯"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 25,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警不得有以下行为（）",
+    "options": [
+      "泄露国家秘密、工作秘密",
+      "弄虚作假、隐瞒案情，包庇、纵容违法犯罪活动",
+      "敲诈勒索或索取、收受贿赂",
+      "玩忽职守，不履行工作职责"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 26,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "对工作中存在（）的警务辅助人员，视情形采取警告、记过、降级等惩戒措施。",
+    "options": [
+      "违纪",
+      "违规",
+      "失职",
+      "渎职"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 27,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警离职时，应当交回所配发的（）",
+    "options": [
+      "工作证件",
+      "服装",
+      "标识",
+      "装备"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 28,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "对违反招聘纪律的报考人员，视情给予（）",
+    "options": [
+      "批评教育",
+      "取消报考资格",
+      "不予录用",
+      "禁止再次报考"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 29,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "凡有（）等亲属关系的辅警，在同一部门、单位直接隶属于同一领导人员的必须轮岗交流;",
+    "options": [
+      "夫妻关系",
+      "直系血亲关系",
+      "三代以内旁系血亲关系",
+      "近姻亲关系"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 30,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "建立民警与辅警协同培训机制，适时组织开展合成作战实战演练，强化一线民警、辅警（）",
+    "options": [
+      "协同作战能力",
+      "快速反应能力",
+      "实战处突能力",
+      "安全防护能力培训"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 31,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "警务辅助人员的考核以岗位职责和所承担的工作任务为基本依据，全面考核（）等方面现实表现，重点考核工作实绩和德才表现。",
+    "options": [
+      "思想品德",
+      "履职能力",
+      "工作实绩",
+      "遵章守纪"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 32,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "警务辅助人员在试用期有下列哪种情形的，应评为不合格等次。",
+    "options": [
+      "思想品德较差的",
+      "工作能力不适应岗位要求的",
+      "工作态度或纪律作风差的",
+      "不能完成工作任务，或因失误、失职给单位造成损失或不良影响的"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 33,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警年度考核的程序包括（）",
+    "options": [
+      "个人自评",
+      "民警评定",
+      "部门考察",
+      "政工审批"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 34,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "考核结果可作为确定层级、（）的依据。",
+    "options": [
+      "解（续）聘",
+      "表彰奖励",
+      "层级升降",
+      "薪酬调整"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 35,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警违反政治纪律行为，有下列情形之一的，予以辞退。",
+    "options": [
+      "散布有损宪法权威、中国共产党和国家、公安机关声誉的言论，或侮辱、诋毁人民警察形象的",
+      "组织或参加非法集会、游行、示威等活动的",
+      "组织或参加非法组织，违法组织或参加罢工的",
+      "有其他有损中国共产党和政府、公安机关声誉行为的"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 36,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警违反保密规定行为的，可视情予以（）处理。",
+    "options": [
+      "警告",
+      "严重警告",
+      "记过并降级",
+      "辞退"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 37,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警违反经济方面纪律规定行为，有下列情形之一的，视情节严重予以记过并降级或辞退（）",
+    "options": [
+      "利用工作之便，侵吞、窃取或以其他手段非法占有公私财物、无主物品",
+      "利用工作之便，侵占、挪用公款",
+      "利用工作之便，为谋取私利或受人请托，有索要、收受财物或行贿行为",
+      "有其他经济方面违反纪律行为"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 38,
+    "type": "multiple",
+    "typeLabel": "多选题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警有下列失职、渎职行为之一的，予以记过并降级，情节严重的予以辞退。（）",
+    "options": [
+      "工作中不履行或不正确履行职责",
+      "徇私舞弊或玩忽职守、贻误工作",
+      "打听案情、接受吃请、收受财物、透露案情",
+      "为非法活动或违法犯罪嫌疑人通风报信、说情开脱或干扰、妨碍案件查处"
+    ],
+    "answer": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 39,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "警务辅助人员统称辅警，包括勤务辅警和文职辅警。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 40,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警不具有人民警察身份，必须在公安机关及其人民警察的指挥和监督下开展警务辅助工作。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 41,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "从事警务辅助工作劳动合同期未满擅自离职的，可继续报名参加辅警招录（）。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 42,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "有较为严重个人不良信用记录的人员，只要业务工作能力较强均可招录为辅警。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 43,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警依法履行职责的行为受法律保护，相关法律后果由其所属公安机关承担。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 44,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警在人民警察带领下驾驶警用汽车、摩托车、船艇、航空器等警用交通工具。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 45,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警可从事与本职工作有关的盈利性经营活动或者受雇于任何个人或者组织。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 46,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "依法提出申诉和控告是辅警享有的权利。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 47,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "应聘警务辅助人员应当具有初中以上文化程度。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 48,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "文职辅警应当具有大专以上文化程度和岗位需要的专业资质或者专门技能。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 49,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警可适当的从事与本职工作有关的盈利性经营活动或者受雇于任何个人或者组织。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 50,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警管理遵循“谁使用、谁管理、谁考核、谁负责”的原则进行日常管理。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 51,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "公安机关可以根据岗位工作需要，为辅警配备必要的执勤和安全防护装备，也可以配备武器、警械。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 52,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "从事辅警招聘工作的人员，遇有涉及本人利害关系、可能影响公平公正情形的，应当回避（）",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 53,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "各级公安机关在规定的辅警用人额度内依法聘用由财政保障的辅警，不得无指标聘用（）",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 54,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "对在非重点风险岗位及非敏感岗位工作满5年以上的，可以根据工作需要适时安排轮岗交流。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 55,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "轮岗交流可在本单位、本部门内进行，也可跨单位、跨部门进行。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 56,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警教育培训包括岗前培训、年度培训、晋升培训、专项培训和骨干培训等。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 57,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "勤务辅警应当加强体能达标培训和警务技战术培训。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 58,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "无正当理由不参加年度考核的警务辅助人员，直接确定其考核结果为不合格。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 59,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "警务辅助人员因工作需要借调的，可不参加年度考核。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 60,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "年度考核不合格，经教育仍无明显改变，或者连续两年年度考核不合格的，予以辞退。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 61,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警休假期间，遇到紧急任务或特殊情况，应立即停止休假，并且不可安排补休。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 62,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "工作时间擅自脱岗，视情节予以警告、严重警告、延迟晋升层级或记过并降级处理;屡教不改或造成严重后果的，予以劝退。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 63,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警一年内迟到、早退超过两次的予以警告，迟到、早退超过五次的予以严重警告，屡教不改的予以延迟晋升层级。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 64,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "违反出国（境）审批要求的，视情节予以警告、严重警告或记过处理;屡教不改或造成严重后果的，予以辞退。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 65,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警工作时间（含工间休息时间）饮酒或宿醉上岗的，可予以辞退。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 66,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警在工作期间，因违反管理规定、操作规范或其他个人原因造成公安机关经济损失的，应承担相应的赔偿责任。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 67,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "责任民警应尽职尽责认真做好对结对辅警的指导和管理工作，对辅警日常纪律、工作情况、生活作风进行全面监督。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 68,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "对于责任民警合理的工作安排，辅警必须听从指挥，不得推诿。对于责任民警的不正当要求，辅警亦必须执行。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 69,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "一名民警可根据实际工作结对一名或多名辅警。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "A"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 70,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "如辅警存在借调情形的，则无需重新调整警辅结对关系。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  },
+  {
+    "id": 71,
+    "type": "judge",
+    "typeLabel": "判断题",
+    "knowledge": "辅警管理办法",
+    "question": "辅警违规违纪属于辅警个人行为，与责任民警无关，无需承担任何责任。",
+    "options": [
+      "正确",
+      "错误"
+    ],
+    "answer": [
+      "B"
+    ],
+    "analysis": ""
+  }
+];
+
+// ---- Global State ----
+let examState = { questions: [], answers: {}, currentIdx: 0, timer: null, timeLeft: 0 };
+let practiceState = { questions: [], currentIdx: 0, answered: {}, autoAdvanceTimer: null };
+let browseState = { page: 1, perPage: 10, filtered: [] };
+
+const LETTERS = ['A','B','C','D','E','F','G','H'];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function switchView(view) {
+  // Clear exam timer when leaving exam view to prevent background submission
+  if (view !== 'exam' && examState.timer) {
+    clearInterval(examState.timer);
+    examState.timer = null;
+  }
+  // Clear auto-advance timer when leaving practice view
+  if (view !== 'practice' && practiceState.autoAdvanceTimer) {
+    clearTimeout(practiceState.autoAdvanceTimer);
+    practiceState.autoAdvanceTimer = null;
+  }
+  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+  document.getElementById('view-' + view).classList.remove('hidden');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  if (view === 'browse') renderBrowse();
+  if (view === 'wrong') renderWrongView();
+  if (view === 'practice' && practiceState.questions.length === 0) restartPractice();
+}
+
+// ---- EXAM MODE ----
+function startExam() {
+  const types = Array.from(document.querySelectorAll('#exam-config input[type=checkbox]:checked')).map(c => c.value);
+  if (types.length === 0) { alert('请至少选择一种题型'); return; }
+  let pool = QUESTIONS.filter(q => types.includes(q.type));
+  let countVal = document.getElementById('exam-count').value;
+  let count = countVal === 'all' ? pool.length : Math.min(parseInt(countVal), pool.length);
+  let order = document.getElementById('exam-order').value;
+  let questions = order === 'random' ? shuffle(pool) : [...pool];
+  questions = questions.slice(0, count);
+  
+  examState.questions = questions;
+  examState.answers = {};
+  examState.currentIdx = 0;
+  
+  const timeMin = parseInt(document.getElementById('exam-time').value);
+  examState.timeLeft = timeMin * 60;
+  
+  document.getElementById('exam-config').classList.add('hidden');
+  document.getElementById('exam-running').classList.remove('hidden');
+  document.getElementById('exam-result').classList.add('hidden');
+  
+  renderExamQuestion();
+  startExamTimer();
+}
+
+function startExamTimer() {
+  if (examState.timer) clearInterval(examState.timer);
+  if (examState.timeLeft === 0) {
+    document.getElementById('exam-timer').textContent = '不限时';
+    return;
+  }
+  examState.timer = setInterval(() => {
+    examState.timeLeft--;
+    updateExamTimer();
+    if (examState.timeLeft <= 0) {
+      clearInterval(examState.timer);
+      alert('时间到，自动交卷！');
+      submitExam();
+    }
+  }, 1000);
+  updateExamTimer();
+}
+
+function updateExamTimer() {
+  if (examState.timeLeft === 0) return;
+  const m = Math.floor(examState.timeLeft / 60);
+  const s = examState.timeLeft % 60;
+  document.getElementById('exam-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if (examState.timeLeft <= 60) {
+    document.getElementById('exam-timer').style.color = '#dc3545';
+  }
+}
+
+function renderExamQuestion() {
+  const q = examState.questions[examState.currentIdx];
+  const total = examState.questions.length;
+  const idx = examState.currentIdx;
+  
+  document.getElementById('exam-progress').textContent = `第 ${idx + 1} / ${total} 题`;
+  document.getElementById('exam-progress-bar').style.width = `${((idx + 1) / total) * 100}%`;
+  
+  const answered = Object.values(examState.answers).filter(a => a.length > 0).length;
+  document.getElementById('exam-answered-count').textContent = `已答 ${answered} / ${total}`;
+  
+  document.getElementById('exam-prev').disabled = idx === 0;
+  document.getElementById('exam-next').textContent = idx === total - 1 ? '交卷' : '下一题';
+  
+  const container = document.getElementById('exam-questions');
+  const userAns = examState.answers[idx] || [];
+  
+  let optionsHTML = q.options.map((opt, i) => {
+    const letter = LETTERS[i];
+    const checked = userAns.includes(letter) ? 'selected' : '';
+    if (q.type === 'multiple') {
+      return `<div class="option-clickable ${checked}" onclick="toggleExamAnswer(${i})">
+        <input type="checkbox" class="option-input" ${checked ? 'checked' : ''} readonly>
+        <span class="option-label">${letter}.</span>
+        <span>${opt}</span>
+      </div>`;
+    } else {
+      return `<div class="option-clickable ${checked}" onclick="selectExamAnswer('${letter}')">
+        <input type="radio" class="option-input" name="exam-q${idx}" ${checked ? 'checked' : ''} readonly>
+        <span class="option-label">${letter}.</span>
+        <span>${opt}</span>
+      </div>`;
+    }
+  }).join('');
+  
+  container.innerHTML = `
+    <div class="card">
+      <div class="question-block">
+        <span class="q-type">${q.typeLabel}</span>
+        <div class="q-text">${idx + 1}. ${q.question}</div>
+        <div class="q-options">${optionsHTML}</div>
+      </div>
+    </div>`;
+}
+
+function selectExamAnswer(letter) {
+  examState.answers[examState.currentIdx] = [letter];
+  renderExamQuestion();
+}
+
+function toggleExamAnswer(optIdx) {
+  const letter = LETTERS[optIdx];
+  let ans = examState.answers[examState.currentIdx] || [];
+  if (ans.includes(letter)) {
+    ans = ans.filter(a => a !== letter);
+  } else {
+    ans.push(letter);
+  }
+  if (ans.length === 0) {
+    delete examState.answers[examState.currentIdx];
+  } else {
+    examState.answers[examState.currentIdx] = ans;
+  }
+  renderExamQuestion();
+}
+
+function examNext() {
+  const total = examState.questions.length;
+  if (examState.currentIdx === total - 1) {
+    submitExam();
+  } else {
+    examState.currentIdx++;
+    renderExamQuestion();
+  }
+}
+
+function examPrev() {
+  if (examState.currentIdx > 0) {
+    examState.currentIdx--;
+    renderExamQuestion();
+  }
+}
+
+function submitExam() {
+  clearSession();
+  if (examState.timer) clearInterval(examState.timer);
+  const total = examState.questions.length;
+  let correct = 0;
+  let resultsHTML = '';
+  
+  examState.questions.forEach((q, i) => {
+    const userAns = (examState.answers[i] || []).sort().join('');
+    const correctAns = q.answer.sort().join('');
+    const isCorrect = userAns === correctAns;
+    if (isCorrect) correct++;
+    
+    const userAnsText = userAns ? userAns.split('').join('、') : '未作答';
+    const correctAnsText = correctAns.split('').join('、');
+    
+    let optionsHTML = q.options.map((opt, j) => {
+      const letter = LETTERS[j];
+      let cls = '';
+      if (correctAns.includes(letter)) cls += ' show-correct';
+      if (userAns.includes(letter) && !correctAns.includes(letter)) cls += ' wrong';
+      return `<div class="option-clickable${cls}">
+        <span class="option-label">${letter}.</span>
+        <span>${opt}</span>
+      </div>`;
+    }).join('');
+    
+    resultsHTML += `
+      <div class="card">
+        <div class="question-block">
+          <span class="q-type">${q.typeLabel}</span>
+          ${isCorrect ? '<span class="q-type" style="background:#28a745;">✓ 正确</span>' : '<span class="q-type" style="background:#dc3545;">✗ 错误</span>'}
+          <div class="q-text">${i + 1}. ${q.question}</div>
+          <div class="q-options">${optionsHTML}</div>
+          <div class="q-answer ${isCorrect ? 'correct' : 'wrong'}">
+            你的答案：${userAnsText}　|　正确答案：${correctAnsText}
+          </div>
+          ${!isCorrect ? `<button class="btn-ai" onclick="loadAIAnalysis(${q.id}, 'ai-exam-${q.id}')">🤖 AI解析</button><div id="ai-exam-${q.id}"></div>` : ''}
+        </div>
+      </div>`;
+  });
+  
+  const score = Math.round((correct / total) * 100);
+  const passed = score >= 60;
+  
+  document.getElementById('exam-running').classList.add('hidden');
+  document.getElementById('exam-result').classList.remove('hidden');
+  document.getElementById('exam-result').innerHTML = `
+    <div class="card">
+      <div class="result-summary">
+        <div class="score ${passed ? 'pass' : 'fail'}">${score}分</div>
+        <div class="info">答对 ${correct} 题 / 共 ${total} 题　|　${passed ? '🎉 恭喜通过！' : '继续加油！'}</div>
+        <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;">
+          <button class="btn-primary" onclick="restartExam()">再考一次</button>
+          <button class="btn-secondary" onclick="switchView('home')">返回首页</button>
+        </div>
+      </div>
+    </div>
+    ${resultsHTML}`;
+}
+
+function restartExam() {
+  clearSession();
+  if (examState.timer) { clearInterval(examState.timer); examState.timer = null; }
+  document.getElementById('exam-config').classList.remove('hidden');
+  document.getElementById('exam-running').classList.add('hidden');
+  document.getElementById('exam-result').classList.add('hidden');
+}
+
+// ---- PRACTICE MODE ----
+function restartPractice() {
+  clearSession();
+  if (practiceState.autoAdvanceTimer) { clearTimeout(practiceState.autoAdvanceTimer); practiceState.autoAdvanceTimer = null; }
+  const type = document.getElementById('practice-type').value;
+  practiceState.questions = type === 'all' ? [...QUESTIONS] : QUESTIONS.filter(q => q.type === type);
+  var startInput = document.getElementById('practice-start');
+  var startIdx = 0;
+  if (startInput) {
+    var startNum = parseInt(startInput.value) || 1;
+    startNum = Math.max(1, Math.min(startNum, practiceState.questions.length));
+    startIdx = startNum - 1;
+  }
+  practiceState.currentIdx = startIdx;
+  practiceState.answered = {};
+  renderPracticeQuestion();
+}
+
+function renderPracticeQuestion() {
+  const q = practiceState.questions[practiceState.currentIdx];
+  const total = practiceState.questions.length;
+  const idx = practiceState.currentIdx;
+  const answered = practiceState.answered[idx];
+  
+  document.getElementById('practice-progress').textContent = `第 ${idx + 1} / ${total} 题`;
+  document.getElementById('practice-progress-bar').style.width = `${((idx + 1) / total) * 100}%`;
+  document.getElementById('practice-prev').disabled = idx === 0;
+  document.getElementById('practice-next').textContent = idx === total - 1 ? '完成' : '下一题';
+
+  // If this is a pending multiple-choice question, render the pending version
+  if (answered && answered.pending) {
+    renderPracticeQuestionPending();
+    return;
+  }
+  
+  const container = document.getElementById('practice-question');
+  const userAns = answered ? answered.userAns : [];
+  
+  let optionsHTML = q.options.map((opt, i) => {
+    const letter = LETTERS[i];
+    let cls = '';
+    if (answered) {
+      if (q.answer.includes(letter)) cls += ' show-correct';
+      if (userAns.includes(letter) && !q.answer.includes(letter)) cls += ' wrong';
+    }
+    const clickHandler = q.type === 'multiple' 
+      ? `togglePracticeAnswer(${i})` 
+      : `selectPracticeAnswer('${letter}')`;
+    const selected = userAns.includes(letter) ? 'selected' + cls : cls;
+    return `<div class="option-clickable ${selected}" ${answered ? '' : `onclick="${clickHandler}"`}>
+      <span class="option-label">${letter}.</span>
+      <span>${opt}</span>
+    </div>`;
+  }).join('');
+  
+  let feedbackHTML = '';
+  if (answered) {
+    const isCorrect = userAns.sort().join('') === q.answer.sort().join('');
+    feedbackHTML = `<div class="q-answer ${isCorrect ? 'correct' : 'wrong'}">
+      ${isCorrect ? '✓ 回答正确！' : '✗ 回答错误'}　|　正确答案：${q.answer.join('、')}
+    </div>`;
+    if (!isCorrect) {
+      let analysisHTML = '<div class="q-analysis"><b>解析：</b><br>';
+      analysisHTML += `<span style="color:#666;">本题考查：${q.knowledge || '相关知识'}</span><div style="margin:8px 0;">`;
+      q.options.forEach((opt, i) => {
+        const letter = LETTERS[i];
+        const isCorrectOpt = q.answer.includes(letter);
+        const isUserOpt = userAns.includes(letter);
+        let cls, mark;
+        if (isCorrectOpt) { cls = 'ok'; mark = '✓ 正确答案'; }
+        else if (isUserOpt) { cls = 'no'; mark = '✗ 你的选择'; }
+        else { cls = 'na'; mark = '×'; }
+        analysisHTML += `<div class="opt-line ${cls}">${letter}. ${opt}　${mark}</div>`;
+      });
+      analysisHTML += '</div></div>';
+      feedbackHTML += analysisHTML;
+      // AI analysis
+      if (getApiKey()) {
+        feedbackHTML += '<div id="ai-practice-' + q.id + '" class="ai-analysis"><div class="ai-loading"><div class="spinner"></div>正在生成AI解析...</div></div>';
+        setTimeout(function() { loadAIAnalysis(q.id, 'ai-practice-' + q.id); }, 100);
+      } else {
+        feedbackHTML += '<div class="ai-analysis"><span style="color:#999;">未配置AI，<span class="ai-link" onclick="openSettings()">点击设置</span></span></div>';
+      }
+    }
+    if (!isCorrect) {
+      const collected = isCollected(q.id);
+      feedbackHTML += `<button class="btn-collect ${collected ? 'collected' : ''}" onclick="toggleCollectWrongDisplay(${q.id}, this)">${collected ? '已收藏' : '收藏到错题本'}</button>`;
+    }
+  }
+  
+  container.innerHTML = `
+    <div class="card">
+      <div class="question-block">
+        <span class="q-type">${q.typeLabel}</span>
+        <div class="q-text">${idx + 1}. ${q.question}</div>
+        <div class="q-options">${optionsHTML}</div>
+        ${feedbackHTML}
+      </div>
+    </div>`;
+}
+
+function selectPracticeAnswer(letter) {
+  const idx = practiceState.currentIdx;
+  if (practiceState.answered[idx]) return;
+  const q = practiceState.questions[idx];
+  practiceState.answered[idx] = { userAns: [letter] };
+  renderPracticeQuestion();
+  autoAdvanceIfCorrect(idx, [letter]);
+}
+
+function togglePracticeAnswer(optIdx) {
+  const idx = practiceState.currentIdx;
+  // Only block if answer is already submitted (not pending)
+  if (practiceState.answered[idx] && !practiceState.answered[idx].pending) return;
+  const letter = LETTERS[optIdx];
+  if (!practiceState.answered[idx]) {
+    practiceState.answered[idx] = { userAns: [], pending: true };
+  }
+  let ans = practiceState.answered[idx].userAns;
+  if (ans.includes(letter)) {
+    ans = ans.filter(a => a !== letter);
+  } else {
+    ans.push(letter);
+  }
+  practiceState.answered[idx].userAns = ans;
+  renderPracticeQuestionPending();
+}
+
+function renderPracticeQuestionPending() {
+  const q = practiceState.questions[practiceState.currentIdx];
+  const idx = practiceState.currentIdx;
+  const userAns = practiceState.answered[idx] ? practiceState.answered[idx].userAns : [];
+  
+  let optionsHTML = q.options.map((opt, i) => {
+    const letter = LETTERS[i];
+    const selected = userAns.includes(letter) ? 'selected' : '';
+    return `<div class="option-clickable ${selected}" onclick="togglePracticeAnswer(${i})">
+      <input type="checkbox" class="option-input" ${selected ? 'checked' : ''} readonly>
+      <span class="option-label">${letter}.</span>
+      <span>${opt}</span>
+    </div>`;
+  }).join('');
+  
+  const container = document.getElementById('practice-question');
+  container.innerHTML = `
+    <div class="card">
+      <div class="question-block">
+        <span class="q-type">${q.typeLabel}</span>
+        <div class="q-text">${idx + 1}. ${q.question}</div>
+        <div class="q-options">${optionsHTML}</div>
+        <button class="btn-primary" style="margin-top:10px;" onclick="submitPracticeMulti()" ${userAns.length === 0 ? 'disabled' : ''}>确认答案</button>
+      </div>
+    </div>`;
+}
+
+function submitPracticeMulti() {
+  const idx = practiceState.currentIdx;
+  const userAns = practiceState.answered[idx].userAns;
+  delete practiceState.answered[idx].pending;
+  practiceState.answered[idx] = { userAns: userAns };
+  renderPracticeQuestion();
+  autoAdvanceIfCorrect(idx, userAns);
+}
+
+function autoAdvanceIfCorrect(idx, userAns) {
+  const q = practiceState.questions[idx];
+  const isCorrect = userAns.sort().join('') === q.answer.sort().join('');
+  const autoCorrect = document.getElementById('practice-auto-next').checked;
+  const autoWrong = document.getElementById('practice-auto-next-wrong').checked;
+  if (isCorrect && autoCorrect) {
+    const feedback = document.querySelector('.q-answer.correct');
+    if (feedback) {
+      feedback.innerHTML += '<div style="margin-top:8px;font-size:13px;color:#888;">⏳ 答对了！正在跳转下一题...</div>';
+    }
+    practiceState.autoAdvanceTimer = setTimeout(() => {
+      practiceState.autoAdvanceTimer = null;
+      if (practiceState.currentIdx === idx) { practiceNext(); }
+    }, 1200);
+  } else if (!isCorrect && autoWrong) {
+    const feedback = document.querySelector('.q-answer.wrong');
+    if (feedback) {
+      feedback.innerHTML += '<div style="margin-top:8px;font-size:13px;color:#888;">⏳ 正在跳转下一题...</div>';
+    }
+    practiceState.autoAdvanceTimer = setTimeout(() => {
+      practiceState.autoAdvanceTimer = null;
+      if (practiceState.currentIdx === idx) { practiceNext(); }
+    }, 2000);
+  }
+}
+
+function practiceNext() {
+  if (practiceState.autoAdvanceTimer) { clearTimeout(practiceState.autoAdvanceTimer); practiceState.autoAdvanceTimer = null; }
+  const total = practiceState.questions.length;
+  if (practiceState.currentIdx < total - 1) {
+    practiceState.currentIdx++;
+    renderPracticeQuestion();
+  } else {
+    const answeredCount = Object.keys(practiceState.answered).length;
+    const correct = Object.keys(practiceState.answered).filter(k => {
+      const a = practiceState.answered[k];
+      return a.userAns.sort().join('') === practiceState.questions[k].answer.sort().join('');
+    }).length;
+    const unanswered = total - answeredCount;
+    const rate = answeredCount > 0 ? Math.round(correct/answeredCount*100) : 0;
+    let msg = `练习完成！\n共 ${total} 题\n已答 ${answeredCount} 题，未答 ${unanswered} 题\n答对 ${correct} 题\n正确率 ${rate}%`;
+    if (unanswered > 0) msg += `\n（正确率按已答题数计算）`;
+    alert(msg);
+    restartPractice();
+  }
+}
+
+function practicePrev() {
+  if (practiceState.autoAdvanceTimer) { clearTimeout(practiceState.autoAdvanceTimer); practiceState.autoAdvanceTimer = null; }
+  if (practiceState.currentIdx > 0) {
+    practiceState.currentIdx--;
+    renderPracticeQuestion();
+  }
+}
+
+// ---- BROWSE MODE ----
+function renderBrowse() {
+  const filter = document.getElementById('browse-filter').value;
+  browseState.filtered = filter === 'all' ? [...QUESTIONS] : QUESTIONS.filter(q => q.type === filter);
+  browseState.page = 1;
+  renderBrowsePage();
+}
+
+function renderBrowsePage() {
+  const total = browseState.filtered.length;
+  const totalPages = Math.ceil(total / browseState.perPage);
+  if (browseState.page > totalPages) browseState.page = totalPages;
+  const start = (browseState.page - 1) * browseState.perPage;
+  const end = Math.min(start + browseState.perPage, total);
+  const items = browseState.filtered.slice(start, end);
+  
+  let html = '';
+  items.forEach((q, i) => {
+    const num = start + i + 1;
+    let optionsHTML = q.options.map((opt, j) => {
+      return `<div class="q-option"><span class="option-label">${LETTERS[j]}.</span> ${opt}</div>`;
+    }).join('');
+    
+    html += `<div class="card browse-q">
+      <div class="question-block" style="background:#fff;">
+        <span class="q-type">${q.typeLabel}</span>
+        <span style="font-size:12px;color:#999;margin-left:5px;">第${q.id}题</span>
+        <div class="q-text">${num}. ${q.question}</div>
+        <div class="q-options">${optionsHTML}</div>
+        <div class="q-answer-line">正确答案：${q.answer.join('、')}</div>
+      </div>
+    </div>`;
+  });
+  
+  document.getElementById('browse-list').innerHTML = html;
+  
+  // Pagination
+  let phtml = '';
+  phtml += `<button onclick="browseGoPage(1)" ${browseState.page===1?'disabled':''}>首页</button>`;
+  phtml += `<button onclick="browseGoPage(${browseState.page-1})" ${browseState.page===1?'disabled':''}>上一页</button>`;
+  for (let p = 1; p <= totalPages; p++) {
+    if (p === 1 || p === totalPages || Math.abs(p - browseState.page) <= 2) {
+      phtml += `<button class="${p===browseState.page?'active':''}" onclick="browseGoPage(${p})">${p}</button>`;
+    } else if (p === 2 || p === totalPages - 1) {
+      phtml += `<button disabled>...</button>`;
+    }
+  }
+  phtml += `<button onclick="browseGoPage(${browseState.page+1})" ${browseState.page===totalPages?'disabled':''}>下一页</button>`;
+  phtml += `<button onclick="browseGoPage(${totalPages})" ${browseState.page===totalPages?'disabled':''}>末页</button>`;
+  document.getElementById('browse-pagination').innerHTML = phtml;
+}
+
+function browseGoPage(p) {
+  browseState.page = p;
+  renderBrowsePage();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ---- WRONG QUESTION COLLECTION ----
+const WRONG_KEY = 'wrongQ_fuguan';
+
+function getCollectedWrong() {
+  try {
+    var data = JSON.parse(localStorage.getItem(WRONG_KEY) || '[]');
+    if (data.length > 0 && typeof data[0] === 'number') {
+      return data.map(function(id) { return { id: id, ai: '' }; });
+    }
+    return data;
+  } catch(e) { return []; }
+}
+function saveCollectedWrong(ids) { localStorage.setItem(WRONG_KEY, JSON.stringify(ids)); scheduleAutoSync(); }
+function isCollected(id) { return getCollectedWrong().some(function(item) { return item.id === id; }); }
+
+function toggleCollectWrongDisplay(id, btn) {
+  let items = getCollectedWrong();
+  if (items.some(function(item) { return item.id === id; })) {
+    items = items.filter(function(item) { return item.id !== id; });
+    btn.classList.remove('collected');
+    btn.textContent = '收藏到错题本';
+  } else {
+    var aiText = getCachedAI(id) || '';
+    items.push({ id: id, ai: aiText });
+    btn.classList.add('collected');
+    btn.textContent = '已收藏';
+  }
+  saveCollectedWrong(items);
+  updateWrongCount();
+}
+
+function updateWrongCount() {
+  const count = getCollectedWrong().length;
+  const badge = document.getElementById('wrong-badge');
+  if (badge) badge.textContent = count;
+}
+
+function renderWrongView() {
+  const items = getCollectedWrong();
+  const questions = items.map(function(item) { return QUESTIONS.find(function(q) { return q.id === item.id; }); }).filter(function(q) { return q; });
+  const statsEl = document.getElementById('wrong-stats');
+  const listEl = document.getElementById('wrong-list');
+  if (questions.length === 0) {
+    statsEl.innerHTML = '<p style="color:#999;text-align:center;padding:30px;">暂无收藏的错题，请在练习模式中答错后收藏。</p>';
+    listEl.innerHTML = '';
+    return;
+  }
+  statsEl.innerHTML = '<p style="color:#666;">已收藏 <b style="color:#c82333;">' + questions.length + '</b> 道错题</p>';
+  let html = '';
+  questions.forEach((q, i) => {
+    const num = i + 1;
+    var aiText = '';
+    var wItem = items.find(function(it) { return it.id === q.id; });
+    if (wItem) aiText = wItem.ai || '';
+    let optionsHTML = q.options.map((opt, j) => {
+      return '<div class="q-option"><span class="option-label">' + LETTERS[j] + '.</span> ' + opt + '</div>';
+    }).join('');
+    html += '<div class="card browse-q"><div class="question-block" style="background:#fff;">' +
+      '<span class="q-type">' + q.typeLabel + '</span>' +
+      '<span style="font-size:12px;color:#999;margin-left:5px;">第' + q.id + '题</span>' +
+      '<button class="btn-collect collected" style="float:right;" onclick="removeFromWrong(' + q.id + ')">移除</button>' +
+      '<div class="q-text">' + num + '. ' + q.question + '</div>' +
+      '<div class="q-options">' + optionsHTML + '</div>' +
+      '<div class="q-answer-line">正确答案：' + q.answer.join('、') + '</div>' +
+      (aiText ? '<div class="ai-analysis"><div class="ai-label">🤖 AI解析</div>' + aiText + '</div>' : (getApiKey() ? '<button class="btn-ai" onclick="loadAIAnalysis(' + q.id + ', \'ai-wrong-' + q.id + '\')">🤖 AI解析</button><div id="ai-wrong-' + q.id + '"></div>' : '')) +
+      '</div></div>';
+  });
+  listEl.innerHTML = html;
+}
+
+function removeFromWrong(id) {
+  saveCollectedWrong(getCollectedWrong().filter(function(item) { return item.id !== id; }));
+  renderWrongView();
+  updateWrongCount();
+}
+
+function clearAllWrong() {
+  if (getCollectedWrong().length === 0) { alert('错题本为空'); return; }
+  if (confirm('确定清空所有错题？')) {
+    saveCollectedWrong([]);
+    renderWrongView();
+    updateWrongCount();
+  }
+}
+
+function startWrongPractice() {
+  const items = getCollectedWrong();
+  if (items.length === 0) { alert('错题本为空，请先在练习模式中收藏错题'); return; }
+  const questions = items.map(function(item) { return QUESTIONS.find(function(q) { return q.id === item.id; }); }).filter(function(q) { return q; });
+  practiceState.questions = questions;
+  practiceState.currentIdx = 0;
+  practiceState.answered = {};
+  switchView('practice');
+  renderPracticeQuestion();
+}
+
+// Init
+// ---- AI ANALYSIS ----
+const AI_CACHE_PREFIX = 'ai_analysis_fuguan_';
+const AI_DEFAULT_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+function getApiKey() {
+  return localStorage.getItem('deepseek_api_key') || '';
+}
+function getApiUrl() {
+  return localStorage.getItem('deepseek_api_url') || AI_DEFAULT_URL;
+}
+function getCachedAI(qid) {
+  return localStorage.getItem(AI_CACHE_PREFIX + qid);
+}
+function setCachedAI(qid, text) {
+  localStorage.setItem(AI_CACHE_PREFIX + qid, text);
+}
+
+async function callAIAnalysis(q) {
+  const apiKey = getApiKey();
+  if (!apiKey) return { error: '请先点击设置配置 DeepSeek API Key' };
+  const optionsText = q.options.map((opt, i) => LETTERS[i] + '. ' + opt).join('\n');
+  const prompt = '你是考试辅导老师。请简洁明了地解析以下题目，说明正确答案为什么对，其他选项为什么不对。不超过150字。\n\n题目：' + q.question + '\n选项：\n' + optionsText + '\n正确答案：' + q.answer.join('、') + '\n\n请直接给出解析：';
+  try {
+    const resp = await fetch(getApiUrl(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: [{ role: 'user', content: prompt }], max_tokens: 500, stream: false })
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      return { error: (err.error && err.error.message) || ('API请求失败(' + resp.status + ')') };
+    }
+    const data = await resp.json();
+    const text = data.choices[0].message.content.trim();
+    return { text };
+  } catch(e) {
+    return { error: '网络错误：' + e.message };
+  }
+}
+
+async function loadAIAnalysis(qid, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const cached = getCachedAI(qid);
+  if (cached) {
+    container.innerHTML = '<div class="ai-label">🤖 AI解析</div>' + cached;
+    return;
+  }
+  container.innerHTML = '<div class="ai-loading"><div class="spinner"></div>正在生成AI解析...</div>';
+  const q = QUESTIONS.find(x => x.id === qid);
+  if (!q) { container.innerHTML = '<div class="ai-error">未找到题目</div>'; return; }
+  const result = await callAIAnalysis(q);
+  const target = document.getElementById(containerId);
+  if (!target) return;
+  if (result.error) {
+    target.innerHTML = '<div class="ai-error">' + result.error + '</div>';
+  } else {
+    target.innerHTML = '<div class="ai-label">🤖 AI解析</div>' + result.text;
+    setCachedAI(qid, result.text);
+    var wItems = getCollectedWrong();
+    var wItem = wItems.find(function(it) { return it.id === qid; });
+    if (wItem) { wItem.ai = result.text; saveCollectedWrong(wItems); }
+  }
+}
+
+function openSettings() {
+  document.getElementById('settings-modal').classList.add('show');
+  document.getElementById('api-key-input').value = getApiKey();
+  document.getElementById('api-url-input').value = getApiUrl() === AI_DEFAULT_URL ? '' : getApiUrl();
+}
+function closeSettings() {
+  document.getElementById('settings-modal').classList.remove('show');
+}
+function saveApiKeySetting() {
+  const key = document.getElementById('api-key-input').value.trim();
+  const url = document.getElementById('api-url-input').value.trim();
+  if (key) localStorage.setItem('deepseek_api_key', key);
+  else localStorage.removeItem('deepseek_api_key');
+  if (url) localStorage.setItem('deepseek_api_url', url);
+  else localStorage.removeItem('deepseek_api_url');
+  closeSettings();
+}
+
+// ---- SESSION SAVE/RESTORE ----
+const SESSION_KEY = 'session_fuguan';
+
+function saveSession() {
+  if (practiceState.questions.length > 0) {
+    const session = {
+      mode: 'practice',
+      questionIds: practiceState.questions.map(q => q.id),
+      currentIdx: practiceState.currentIdx,
+      answered: practiceState.answered
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    return;
+  }
+  const examRunning = document.getElementById('exam-running');
+  if (examState.questions.length > 0 && examRunning && !examRunning.classList.contains('hidden')) {
+    const session = {
+      mode: 'exam',
+      questionIds: examState.questions.map(q => q.id),
+      currentIdx: examState.currentIdx,
+      answers: examState.answers,
+      timeLeft: examState.timeLeft,
+      savedAt: Date.now()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  }
+  scheduleAutoSync();
+}
+
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+  scheduleAutoSync();
+}
+
+function restoreSession() {
+  const data = localStorage.getItem(SESSION_KEY);
+  if (!data) return false;
+  try {
+    const session = JSON.parse(data);
+    if (session.mode === 'practice') {
+      const questions = session.questionIds.map(id => QUESTIONS.find(q => q.id === id)).filter(q => q);
+      if (questions.length === 0) { clearSession(); return false; }
+      practiceState.questions = questions;
+      practiceState.currentIdx = Math.min(session.currentIdx, questions.length - 1);
+      practiceState.answered = session.answered || {};
+      switchView('practice');
+      renderPracticeQuestion();
+      return true;
+    } else if (session.mode === 'exam') {
+      const questions = session.questionIds.map(id => QUESTIONS.find(q => q.id === id)).filter(q => q);
+      if (questions.length === 0) { clearSession(); return false; }
+      examState.questions = questions;
+      examState.currentIdx = Math.min(session.currentIdx, questions.length - 1);
+      examState.answers = session.answers || {};
+      if (session.timeLeft > 0 && session.savedAt) {
+        const elapsed = Math.floor((Date.now() - session.savedAt) / 1000);
+        examState.timeLeft = session.timeLeft - elapsed;
+        if (examState.timeLeft <= 0) {
+          clearSession();
+          return false;
+        }
+      } else {
+        examState.timeLeft = session.timeLeft || 0;
+      }
+      document.getElementById('exam-config').classList.add('hidden');
+      document.getElementById('exam-running').classList.remove('hidden');
+      document.getElementById('exam-result').classList.add('hidden');
+      switchView('exam');
+      renderExamQuestion();
+      startExamTimer();
+      return true;
+    }
+  } catch(e) { clearSession(); }
+  return false;
+}
+
+// Auto-save every 5 seconds and on page unload
+setInterval(saveSession, 5000);
+window.addEventListener('beforeunload', function() { saveSession(); if (isSyncEnabled()) { try { syncPush(getSyncUsername(), getSyncPassword()); } catch(e){} } });
+
+document.getElementById('stat-total').textContent = QUESTIONS.length;
+updateWrongCount();
+
+// ============================================================
+// ---- CLOUD SYNC MODULE (跨设备云端同步) ----
+// ============================================================
+const SYNC_API_BASE = 'https://api.jsonbin.io/v3';
+const SYNC_SETTINGS_KEY = 'cloud_sync_settings_fuguan';
+const SYNC_BIN_ID_KEY = 'cloud_sync_bin_id_fuguan';
+const SYNC_SUBJECT = 'fuguan';
+let _syncDebounceTimer = null;
+let _syncInProgress = false;
+
+function getSyncSettings() {
+  try { return JSON.parse(localStorage.getItem(SYNC_SETTINGS_KEY) || '{}'); }
+  catch(e) { return { username: '', password: '', masterKey: '', autoSync: true }; }
+}
+function saveSyncSettingsToStorage(s) { localStorage.setItem(SYNC_SETTINGS_KEY, JSON.stringify(s)); }
+function isSyncEnabled() {
+  var s = getSyncSettings();
+  return !!(s.masterKey && s.masterKey.trim() && s.username && s.password);
+}
+function getSyncUsername() { return (getSyncSettings().username || '').trim(); }
+function getSyncPassword() { return getSyncSettings().password || ''; }
+
+// ---- Simple reversible encryption (XOR + Base64) ----
+function syncEncrypt(text, password) {
+  if (!password) return btoa(unescape(encodeURIComponent(text)));
+  try {
+    var key = password, out = '';
+    for (var i = 0; i < text.length; i++) out += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    return btoa(unescape(encodeURIComponent(out)));
+  } catch(e) { return btoa(unescape(encodeURIComponent(text))); }
+}
+function syncDecrypt(encrypted, password) {
+  try {
+    var raw = decodeURIComponent(escape(atob(encrypted)));
+    if (!password) return raw;
+    var key = password, out = '';
+    for (var i = 0; i < raw.length; i++) out += String.fromCharCode(raw.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    return out;
+  } catch(e) { return ''; }
+}
+
+function getBinId() { return localStorage.getItem(SYNC_BIN_ID_KEY) || ''; }
+function setBinId(id) { localStorage.setItem(SYNC_BIN_ID_KEY, id); }
+
+function collectDataForSync() {
+  var data = { _syncVersion: 1, _syncTime: Date.now(), subject: SYNC_SUBJECT };
+  var wq = localStorage.getItem(WRONG_KEY);
+  if (wq) { try { data.wrongQ = JSON.parse(wq); } catch(e) {} }
+  var sess = localStorage.getItem(SESSION_KEY);
+  if (sess) { try { data.session = JSON.parse(sess); } catch(e) {} }
+  // AI cache
+  var aiCache = {};
+  for (var i = 0; i < localStorage.length; i++) {
+    var key = localStorage.key(i);
+    if (key && key.indexOf(AI_CACHE_PREFIX) === 0) {
+      aiCache[key] = localStorage.getItem(key);
+    }
+  }
+  if (Object.keys(aiCache).length > 0) data.aiCache = aiCache;
+  return data;
+}
+
+function applySyncedData(data) {
+  if (!data || typeof data !== 'object') return;
+  if (data.wrongQ !== undefined) {
+    var localWrong = [];
+    try { localWrong = JSON.parse(localStorage.getItem(WRONG_KEY) || '[]'); } catch(e) {}
+    var wMerged = {};
+    localWrong.forEach(function(it) { var k = typeof it === 'number' ? it : it.id; wMerged[k] = it; });
+    data.wrongQ.forEach(function(it) { var k = typeof it === 'number' ? it : it.id; if (!wMerged[k]) wMerged[k] = it; });
+    localStorage.setItem(WRONG_KEY, JSON.stringify(Object.values(wMerged)));
+  }
+  if (data.session !== undefined) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data.session));
+  }
+  if (data.aiCache && typeof data.aiCache === 'object') {
+    Object.keys(data.aiCache).forEach(function(k) { localStorage.setItem(k, data.aiCache[k]); });
+  }
+}
+
+function syncApi(method, path, body) {
+  var settings = getSyncSettings();
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, SYNC_API_BASE + path, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-Master-Key', settings.masterKey);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        try {
+          var resp = JSON.parse(xhr.responseText);
+          if (xhr.status >= 200 && xhr.status < 300) resolve(resp);
+          else reject(new Error((resp && resp.message) || ('HTTP ' + xhr.status)));
+        } catch(e) { reject(new Error('响应解析失败: ' + xhr.status)); }
+      }
+    };
+    xhr.onerror = function() { reject(new Error('网络错误，请检查网络连接')); };
+    xhr.ontimeout = function() { reject(new Error('请求超时')); };
+    xhr.timeout = 15000;
+    xhr.send(body ? JSON.stringify(body) : null);
+  });
+}
+
+function syncPush(username, password) {
+  return new Promise(function(resolve, reject) {
+    if (!isSyncEnabled()) { reject(new Error('未配置云同步')); return; }
+    var data = collectDataForSync();
+    var encrypted = syncEncrypt(JSON.stringify(data), password);
+    var binId = getBinId();
+    var payload = { data: encrypted, _v: 1 };
+    var doCreate = function() {
+      syncApi('POST', '/b', payload).then(function(resp) {
+        if (resp && resp.metadata && resp.metadata.id) setBinId(resp.metadata.id);
+        syncLog('上传成功', 'ok');
+        updateSyncIndicator('synced', '已同步');
+        localStorage.setItem('last_sync_time', Date.now());
+        resolve(resp);
+      }).catch(reject);
+    };
+    if (binId) {
+      syncApi('PUT', '/b/' + binId, payload).then(function(resp) {
+        syncLog('上传成功', 'ok');
+        updateSyncIndicator('synced', '已同步');
+        localStorage.setItem('last_sync_time', Date.now());
+        resolve(resp);
+      }).catch(function(err) {
+        if (err.message.indexOf('not found') >= 0 || err.message.indexOf('404') >= 0) doCreate();
+        else reject(err);
+      });
+    } else { doCreate(); }
+  });
+}
+
+function syncPull(username, password) {
+  return new Promise(function(resolve, reject) {
+    if (!isSyncEnabled()) { reject(new Error('未配置云同步')); return; }
+    var binId = getBinId();
+    if (!binId) { resolve(null); return; }
+    syncApi('GET', '/b/' + binId).then(function(resp) {
+      var record = resp && resp.record;
+      if (!record || !record.data) { resolve(null); return; }
+      var decrypted = syncDecrypt(record.data, password);
+      if (!decrypted) { reject(new Error('数据解密失败，密码可能不正确')); return; }
+      try {
+        var data = JSON.parse(decrypted);
+        applySyncedData(data);
+        syncLog('云端数据已拉取并合并', 'ok');
+        updateSyncIndicator('synced', '已同步');
+        resolve(data);
+      } catch(e) { reject(new Error('数据解析失败: ' + e.message)); }
+    }).catch(function(err) {
+      if (err.message.indexOf('not found') >= 0 || err.message.indexOf('404') >= 0) resolve(null);
+      else reject(err);
+    });
+  });
+}
+
+function syncNow() {
+  if (_syncInProgress) { syncLog('同步进行中，请稍候...', 'info'); return; }
+  if (!isSyncEnabled()) { syncLog('请先配置云同步（账号、密码、Master Key）', 'err'); openSyncModal(); return; }
+  _syncInProgress = true;
+  updateSyncIndicator('syncing', '同步中...');
+  syncLog('开始同步...', 'info');
+  var username = getSyncUsername(), password = getSyncPassword();
+  syncPull(username, password).then(function() {
+    return syncPush(username, password);
+  }).then(function() {
+    syncLog('同步完成 ✓', 'ok');
+    updateSyncIndicator('synced', '已同步');
+    try { updateWrongCount(); } catch(e) {}
+  }).catch(function(err) {
+    syncLog('同步失败: ' + err.message, 'err');
+    updateSyncIndicator('error', '同步失败');
+  }).then(function() { _syncInProgress = false; });
+}
+
+function scheduleAutoSync() {
+  var s = getSyncSettings();
+  if (!s.autoSync || !isSyncEnabled()) return;
+  if (_syncDebounceTimer) clearTimeout(_syncDebounceTimer);
+  _syncDebounceTimer = setTimeout(function() {
+    if (_syncInProgress) return;
+    _syncInProgress = true;
+    updateSyncIndicator('syncing', '同步中...');
+    syncPush(getSyncUsername(), getSyncPassword()).catch(function(err) {
+      syncLog('自动同步失败: ' + err.message, 'err');
+      updateSyncIndicator('error', '同步失败');
+    }).then(function() { _syncInProgress = false; });
+  }, 3000);
+}
+
+function syncOnLoad() {
+  if (!isSyncEnabled()) { updateSyncIndicator('offline', '未配置'); return; }
+  var s = getSyncSettings();
+  if (!s.autoSync) { updateSyncIndicator('synced', '已就绪'); return; }
+  updateSyncIndicator('syncing', '同步中...');
+  syncLog('拉取云端数据...', 'info');
+  var username = getSyncUsername(), password = getSyncPassword();
+  syncPull(username, password).then(function(data) {
+    if (data) { syncLog('已从云端恢复数据', 'ok'); try { updateWrongCount(); } catch(e) {} }
+    else { syncLog('云端暂无存档', 'info'); }
+    return syncPush(username, password);
+  }).then(function() {
+    syncLog('同步完成', 'ok');
+    updateSyncIndicator('synced', '已同步');
+  }).catch(function(err) {
+    syncLog('同步失败: ' + err.message, 'err');
+    updateSyncIndicator('error', '同步失败');
+  });
+}
+
+function updateSyncIndicator(state, text) {
+  var el = document.getElementById('sync-status-indicator');
+  var txt = document.getElementById('sync-status-text');
+  if (!el) return;
+  el.className = 'sync-status ' + state;
+  if (txt) txt.textContent = text;
+}
+function syncLog(msg, type) {
+  var logEl = document.getElementById('sync-log');
+  if (!logEl) return;
+  var time = new Date().toLocaleTimeString();
+  var line = document.createElement('div');
+  line.className = 'log-line log-' + (type || 'info');
+  line.textContent = '[' + time + '] ' + msg;
+  if (logEl.children.length === 1 && logEl.children[0].textContent.indexOf('同步日志') >= 0) logEl.innerHTML = '';
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+  while (logEl.children.length > 50) logEl.removeChild(logEl.firstChild);
+}
+function openSyncModal() {
+  document.getElementById('sync-modal').classList.add('show');
+  var s = getSyncSettings();
+  document.getElementById('sync-username').value = s.username || '';
+  document.getElementById('sync-password').value = s.password || '';
+  document.getElementById('sync-master-key').value = s.masterKey || '';
+  document.getElementById('sync-auto').checked = s.autoSync !== false;
+  refreshSyncStatusDetail();
+}
+function closeSyncModal() { document.getElementById('sync-modal').classList.remove('show'); }
+function saveSyncSettings() {
+  var s = {
+    username: document.getElementById('sync-username').value.trim(),
+    password: document.getElementById('sync-password').value,
+    masterKey: document.getElementById('sync-master-key').value.trim(),
+    autoSync: document.getElementById('sync-auto').checked
+  };
+  saveSyncSettingsToStorage(s);
+  syncLog('云同步设置已保存', 'ok');
+  if (isSyncEnabled()) updateSyncIndicator('synced', '已就绪');
+  else updateSyncIndicator('offline', '未配置');
+  refreshSyncStatusDetail();
+}
+function refreshSyncStatusDetail() {
+  var el = document.getElementById('sync-status-detail');
+  if (!el) return;
+  var s = getSyncSettings();
+  if (!isSyncEnabled()) { el.innerHTML = '<span style="color:#999;">未配置云同步，数据仅保存在本地。</span>'; return; }
+  var binId = getBinId();
+  var lastSync = localStorage.getItem('last_sync_time');
+  var lastSyncStr = lastSync ? new Date(parseInt(lastSync)).toLocaleString() : '从未';
+  el.innerHTML = '<div>同步账号：<b>' + s.username + '</b></div>' +
+    '<div>云端存档ID：' + (binId ? binId : '（首次同步后创建）') + '</div>' +
+    '<div>上次同步：' + lastSyncStr + '</div>';
+}
+// ---- END CLOUD SYNC MODULE ----
+
+// Restore previous session on page load
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    if (restoreSession()) {
+      var notice = document.createElement('div');
+      notice.style.cssText = 'position:fixed;top:60px;right:20px;background:#1b7e2b;color:#fff;padding:10px 20px;border-radius:6px;z-index:9999;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
+      notice.textContent = '已恢复上次答题进度';
+      document.body.appendChild(notice);
+      setTimeout(function() { notice.remove(); }, 3000);
+    }
+  }, 200);
+  // Auto sync on load
+  setTimeout(syncOnLoad, 500);
+});
+</script>
+</body>
+</html>

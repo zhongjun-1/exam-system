@@ -1,0 +1,7 @@
+node_modules/
+.uploads/
+.trae-html-share-packages/
+sync-data.json
+migrated-data.json
+extract-*.js
+*.log
